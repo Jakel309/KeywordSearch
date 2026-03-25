@@ -23,6 +23,10 @@ def main() -> None:
     idf_parser = subparsers.add_parser("idf", help="Gets idf for given term")
     idf_parser.add_argument("term", type=str, help="Term")
 
+    tfidf_parser = subparsers.add_parser("tfidf", help="Gets tfidf for given term")
+    tfidf_parser.add_argument("doc_id", type=int, help="Document id")
+    tfidf_parser.add_argument("term", type=str, help="Term")
+
     args = parser.parse_args()
 
     print("Loading movies.")
@@ -57,6 +61,10 @@ def main() -> None:
         case "idf":
             invertedIndex.load()
             print(f"Inverse document frequency of '{args.term}': {invertedIndex.get_idf(args.term):.2f}")
+        case "tfidf":
+            invertedIndex.load()
+            tf_idf = invertedIndex.get_tf(args.doc_id, args.term) * invertedIndex.get_idf(args.term)
+            print(f"TF-IDF score of '{args.term}' in document '{args.doc_id}': {tf_idf:.2f}")
         case _:
             parser.print_help()
 
