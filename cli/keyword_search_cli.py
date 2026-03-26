@@ -27,6 +27,9 @@ def main() -> None:
     tfidf_parser.add_argument("doc_id", type=int, help="Document id")
     tfidf_parser.add_argument("term", type=str, help="Term")
 
+    bm25_idf_parser = subparsers.add_parser("bm25idf", help="Get BM25 IDF score for a given term")
+    bm25_idf_parser.add_argument("term", type=str, help="Term to get BM25 IDF score for")
+
     args = parser.parse_args()
 
     print("Loading movies.")
@@ -65,6 +68,9 @@ def main() -> None:
             invertedIndex.load()
             tf_idf = invertedIndex.get_tf(args.doc_id, args.term) * invertedIndex.get_idf(args.term)
             print(f"TF-IDF score of '{args.term}' in document '{args.doc_id}': {tf_idf:.2f}")
+        case "bm25idf":
+            invertedIndex.load()
+            print(f"BM25 IDF score of '{args.term}': {invertedIndex.get_bm25_idf(args.term) : .2f}")
         case _:
             parser.print_help()
 

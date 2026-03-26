@@ -62,3 +62,11 @@ class InvertedIndex:
         total_doc_count = len(self.docmap)
         term_match_doc_count = len(self.get_documents(token[0]))
         return math.log((total_doc_count + 1) / (term_match_doc_count + 1))
+
+    def get_bm25_idf(self, term: str) -> float:
+        token = tokenize.tokenization(term)
+        if len(token) > 1:
+            return 0
+        total_doc_count = len(self.docmap)
+        term_match_doc_count = len(self.get_documents(token[0]))
+        return math.log((total_doc_count - term_match_doc_count + .5) / (term_match_doc_count + .5) + 1)
