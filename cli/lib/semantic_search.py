@@ -121,7 +121,7 @@ def search(query, limit):
         print(f"{count}. {result["title"]}: (score:{result["score"]}\n{result["description"]}")
         count += 1
 
-def chunk(text, size):
+def chunk(text, size, overlap):
     split_text = text.split(' ')
     chunks = []
     chunk = ""
@@ -130,10 +130,16 @@ def chunk(text, size):
         chunk += word + " "
         count += 1
         if count == size:
+            if overlap > 0 and len(chunks) > 0:
+                last_chunk = chunks[len(chunks) - 1].split(" ")
+                chunk = " ".join(last_chunk[len(last_chunk)-overlap:]) + " " + chunk
+            chunks.append(chunk.strip())
             count = 0
-            chunks.append(chunk)
             chunk = ""
     if chunk != "":
+        if overlap > 0 and len(chunks) > 0:
+            last_chunk = chunks[len(chunks) - 1].split(" ")
+            chunk = " ".join(last_chunk[len(last_chunk)-overlap:]) + " " + chunk
         chunks.append(chunk)
     
     print(f"Chunking {len(text)} characters")
