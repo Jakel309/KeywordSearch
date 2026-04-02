@@ -3,6 +3,7 @@ import numpy as np
 import constants
 import os
 import json
+import re
 
 class SemanticSearch:
     def __init__(self):
@@ -143,6 +144,32 @@ def chunk(text, size, overlap):
         chunks.append(chunk)
     
     print(f"Chunking {len(text)} characters")
+    count = 1
+    for chunk in chunks:
+        print(f"{count}. {chunk}")
+        count += 1
+
+def semantic_chunk(text, max_size, overlap):
+    reg_sen = r"(?<=[.!?])\s+"
+    sentences = re.split(reg_sen, text)
+    chunks = []
+    chunk = ""
+    count = 0
+    for sentence in sentences:
+        if overlap > 0 and len(chunks) > 0:
+            last_chunk = re.split(reg_sen, chunks[len(chunks) - 1])
+            chunk = " ".join(last_chunk[len(last_chunk)-overlap:]) + " " + chunk
+            count = overlap
+        chunk += sentence + " "
+        count += 1
+        if count == max_size:
+            chunks.append(chunk.strip())
+            count = 0
+            chunk = ""
+    if chunk != "":
+        chunks.append(chunk)
+    
+    print(f"Semantically chunking {len(text)} characters")
     count = 1
     for chunk in chunks:
         print(f"{count}. {chunk}")

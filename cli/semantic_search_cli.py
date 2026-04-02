@@ -26,6 +26,11 @@ def main():
     chunk_parser.add_argument("--chunk-size", type=int, default=200, help="Size of chunks")
     chunk_parser.add_argument("--overlap", type=int, default=0, help="Overlap of chunks")
 
+    semantic_chunk_parser = subparsers.add_parser("semantic_chunk", help="Creates chunk semantically")
+    semantic_chunk_parser.add_argument("text", type=str, help="Text to chunk")
+    semantic_chunk_parser.add_argument("--max-chunk-size", type=int, default=4, help="Max chunk size")
+    semantic_chunk_parser.add_argument("--overlap", type=int, default=0, help="Overlap of chunks")
+
     args = parser.parse_args()
 
     match args.command:
@@ -41,6 +46,8 @@ def main():
             ss.search(args.query, args.limit)
         case "chunk":
             ss.chunk(args.text, args.chunk_size, args.overlap)
+        case "semantic_chunk":
+            ss.semantic_chunk(args.text, args.max_chunk_size, args.overlap)
         case _:
             parser.print_help()
 
